@@ -1,4 +1,4 @@
 ﻿[*.vb]
 
-# CA1416: 验证平台兼容性
+# CA1416: Validate platform compatibility
 dotnet_diagnostic.CA1416.severity = none

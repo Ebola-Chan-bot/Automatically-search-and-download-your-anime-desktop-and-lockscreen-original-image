@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+	<RootNamespace>自动搜索下载你的二次元桌面和锁屏原图</RootNamespace>
+	<UseWPF>true</UseWPF>
+	  <UseWindowsForms>true</UseWindowsForms>
+	<ApplicationIcon>图标.ico</ApplicationIcon>
+	<Version>1.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<Import Include="System.Windows" />
+	<Import Include="System.Windows.Controls" />
+	<Import Include="System.Windows.Data" />
+	<Import Include="System.Windows.Documents" />
+	<Import Include="System.Windows.Input" />
+	<Import Include="System.Windows.Media" />
+	<Import Include="System.Windows.Media.Imaging" />
+	<Import Include="System.Windows.Navigation" />
+	<Import Include="System.Windows.Shapes" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Aspose.HTML" Version="21.7.0" />
+	<PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.2" />
+	<PackageReference Include="TaskScheduler" Version="2.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\..\IqdbApi\IqdbApi\IqdbApi.csproj" />
+  </ItemGroup>
+
+</Project>
