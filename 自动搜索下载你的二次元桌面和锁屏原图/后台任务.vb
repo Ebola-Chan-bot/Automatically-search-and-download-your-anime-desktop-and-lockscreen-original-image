@@ -87,7 +87,7 @@ Module 后台任务
 						写日志(桌面 & 无符合要求的原图)
 				End Select
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
-				通知文本 = 桌面 & ex.InnerException.Message
+				通知文本 = 桌面 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
 				自定义通知(通知文本)
 				写日志(通知文本)
 			Catch ex As Net.Http.HttpRequestException
@@ -123,7 +123,7 @@ Module 后台任务
 						写日志(锁屏 & 无符合要求的原图)
 				End Select
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
-				通知文本 = 锁屏 & ex.InnerException.Message
+				通知文本 = 锁屏 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
 				自定义通知(通知文本)
 				写日志(通知文本)
 			Catch ex As Net.Http.HttpRequestException

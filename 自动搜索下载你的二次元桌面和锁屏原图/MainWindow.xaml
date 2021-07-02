@@ -144,7 +144,7 @@
 					</Grid>
 					<Button x:Name="锁屏_IQDB搜索" Content="IQDB搜索"/>
 					<ProgressBar x:Name="锁屏_搜索进度"/>
-					<TextBlock x:Name="锁屏_错误信息"/>
+					<TextBlock x:Name="锁屏_错误信息" TextWrapping="WrapWithOverflow"/>
 				</StackPanel>
 				<ListView x:Name="锁屏_结果列表" ItemTemplate="{StaticResource ResourceKey=搜索结果明细}" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.Row="1"/>
 			</Grid>

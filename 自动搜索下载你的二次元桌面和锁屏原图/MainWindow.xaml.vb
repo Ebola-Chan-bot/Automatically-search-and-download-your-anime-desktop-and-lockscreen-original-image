@@ -120,7 +120,7 @@ Class MainWindow
 			Try
 				桌面_结果列表.ItemsSource = From 结果 As 搜索结果 In Await IQDB查询(桌面文件路径) Select New 结果显示(结果)
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
-				桌面_错误信息.Text = ex.InnerException.Message
+				桌面_错误信息.Text = If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
 			Catch ex As Exception
 				桌面_错误信息.Text = ex.Message
 			End Try
@@ -135,7 +135,7 @@ Class MainWindow
 			Try
 				锁屏_结果列表.ItemsSource = From 结果 As 搜索结果 In Await IQDB查询(锁屏文件路径) Select New 结果显示(结果)
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
-				锁屏_错误信息.Text = ex.InnerException.Message
+				锁屏_错误信息.Text = If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
 			Catch ex As Exception
 				锁屏_错误信息.Text = ex.Message
 			End Try
