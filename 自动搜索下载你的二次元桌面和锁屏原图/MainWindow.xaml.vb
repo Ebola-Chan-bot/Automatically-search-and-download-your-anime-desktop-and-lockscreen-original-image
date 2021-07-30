@@ -160,7 +160,7 @@ Class MainWindow
 	End Sub
 
 	Private Async Sub Button_Click(sender As Object, e As RoutedEventArgs)
-		Dim 结果 As 结果显示 = DirectCast(sender, Button).Tag
+		Dim 结果 As 结果显示 = DirectCast(sender, Controls.Button).Tag
 		If 结果.宽度 < 设置项.宽度不小于 OrElse 结果.高度 < 设置项.高度不小于 Then
 			结果.结果提示 = 图像尺寸不满足设置的条件
 		Else
