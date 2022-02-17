@@ -23,16 +23,36 @@ Friend Module 图站检索
 	End Function
 
 	Public Async Function 从网页保存原图(网页URL As String) As Task(Of 保存结果)
-		Dim HTML文档 As Html.HTMLDocument, HTML集合 As Html.Collections.HTMLCollection
-		If 网页URL.Contains("konachan") Then
+		Dim HTML文档 As Html.HTMLDocument, 成功 As Boolean
+		If 网页URL.Contains("e-shuushuu") Then
 			Try
 				HTML文档 = Await Task.Run(Function() New Html.HTMLDocument(网页URL))
 			Catch ex As Exception
 				Return 保存结果.网站访问失败
 			End Try
-			HTML集合 = HTML文档.GetElementsByClassName("original-file-unchanged")
+			Dim HTML集合 = HTML文档.GetElementsByClassName("thumb_image")
 			If HTML集合.Any Then
-				Dim 文件URL As String = HTML集合(0).GetAttribute("href"), 成功 As Boolean
+				Dim HTML元素 As Html.HTMLAnchorElement = HTML集合.Single
+				Dim href = HTML元素.Href
+				Dim 文件URL = New Uri(New Uri(HTML元素.BaseURI), href)
+				Try
+					成功 = Await 尝试入库(Await HTTP客户端.GetByteArrayAsync(文件URL), If(设置项.扩展名一律设为PNG, Path.GetFileNameWithoutExtension(href) + ".png", Path.GetFileName(href)))
+				Catch ex As Net.Http.HttpRequestException
+					Return 保存结果.图片下载失败
+				End Try
+				Return If(成功, 保存结果.成功, 保存结果.重复)
+			Else
+				Return 保存结果.没有找到链接
+			End If
+		ElseIf 网页URL.Contains("konachan") Then
+			Try
+				HTML文档 = Await Task.Run(Function() New Html.HTMLDocument(网页URL))
+			Catch ex As Exception
+				Return 保存结果.网站访问失败
+			End Try
+			Dim HTML集合 = HTML文档.GetElementsByClassName("original-file-unchanged")
+			If HTML集合.Any Then
+				Dim 文件URL As String = DirectCast(HTML集合.Single, Html.HTMLAnchorElement).Href
 				Try
 					成功 = Await 尝试入库(Await HTTP客户端.GetByteArrayAsync(文件URL), If(设置项.扩展名一律设为PNG, Path.GetFileNameWithoutExtension(文件URL) + ".png", Path.GetFileName(文件URL)))
 				Catch ex As Net.Http.HttpRequestException
@@ -42,7 +62,7 @@ Friend Module 图站检索
 			End If
 			HTML集合 = HTML文档.GetElementsByClassName("original-file-changed")
 			If HTML集合.Any Then
-				Dim 文件URL As String = HTML集合(0).GetAttribute("href"), 成功 As Boolean
+				Dim 文件URL As String = DirectCast(HTML集合.Single, Html.HTMLAnchorElement).Href
 				Try
 					成功 = Await 尝试入库(Await HTTP客户端.GetByteArrayAsync(文件URL), If(设置项.扩展名一律设为PNG, Path.GetFileNameWithoutExtension(文件URL) + ".png", Path.GetFileName(文件URL)))
 				Catch ex As Net.Http.HttpRequestException
@@ -51,6 +71,24 @@ Friend Module 图站检索
 				Return If(成功, 保存结果.成功, 保存结果.重复)
 			End If
 			Return 保存结果.没有找到链接
+		ElseIf 网页URL.Contains("zerochan") Then
+			Try
+				HTML文档 = Await Task.Run(Function() New Html.HTMLDocument(网页URL))
+			Catch ex As Exception
+				Return 保存结果.网站访问失败
+			End Try
+			Dim HTML集合 = HTML文档.GetElementsByClassName("preview")
+			If HTML集合.Any Then
+				Dim 文件URL = DirectCast(HTML集合.Single, Html.HTMLAnchorElement).Href
+				Try
+					成功 = Await 尝试入库(Await HTTP客户端.GetByteArrayAsync(文件URL), If(设置项.扩展名一律设为PNG, Path.GetFileNameWithoutExtension(文件URL) + ".png", Path.GetFileName(文件URL)))
+				Catch ex As Net.Http.HttpRequestException
+					Return 保存结果.图片下载失败
+				End Try
+				Return If(成功, 保存结果.成功, 保存结果.重复)
+			Else
+				Return 保存结果.没有找到链接
+			End If
 		Else
 			Return 保存结果.不支持该网站
 		End If
@@ -58,7 +96,8 @@ Friend Module 图站检索
 
 	Public Async Function 搜索并筛选原图(路径 As String) As Task(Of 保存结果)
 		Dim 原始结果 As SearchResult
-		If 检查库存(计算哈希(File.ReadAllBytes(路径))) Then
+		Dim 缩略图哈希 = 计算哈希(File.ReadAllBytes(路径))
+		If 检查库存(缩略图哈希) Then
 			Return 保存结果.重复
 		Else
 			Using 文件流 As FileStream = File.OpenRead(路径)
@@ -89,9 +128,11 @@ Friend Module 图站检索
 			Select Case 当前结果
 				Case 保存结果.成功
 					最终结果 = 保存结果.成功
+					缩略图入库(缩略图哈希)
 					Exit For
 				Case 保存结果.重复
 					最终结果 = 保存结果.重复
+					缩略图入库(缩略图哈希)
 					Exit For
 				Case Else
 					If 最终结果 = 保存结果.未定义 Then

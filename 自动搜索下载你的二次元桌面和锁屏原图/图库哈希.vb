@@ -52,6 +52,22 @@ Module 图库哈希
 		End Function
 	End Class
 	ReadOnly 哈希比较器 As New 哈希比较
+	''' <summary>
+	''' 此函数不会检查哈希是否重复，调用方负责检查
+	''' </summary>
+	''' <param name="哈希"></param>
+	Async Sub 缩略图入库(哈希 As Byte())
+		Await 哈希任务
+		哈希表.Add(哈希)
+		哈希流.Write(哈希)
+		哈希流.Flush()
+	End Sub
+	''' <summary>
+	''' 此函数将检查哈希是否重复，如果重复则拒绝入库
+	''' </summary>
+	''' <param name="新图"></param>
+	''' <param name="文件名"></param>
+	''' <returns></returns>
 	Async Function 尝试入库(新图 As Byte(), 文件名 As String) As Task(Of Boolean)
 		Dim 新图哈希 As Byte() = 计算哈希(新图)
 		Await 哈希任务

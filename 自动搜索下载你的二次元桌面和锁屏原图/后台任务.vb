@@ -53,11 +53,6 @@ Module 后台任务
 			日志流.Flush()
 		End If
 	End Sub
-	Private Sub 发通知(通知 As Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder)
-		If 设置项.后台任务异常时发送通知 Then
-			通知.Show()
-		End If
-	End Sub
 	Async Sub 定时任务()
 		Dim 路径 As String = 搜索桌面壁纸(设置项.当前桌面路径)
 		Dim 通知文本 As String
@@ -88,11 +83,11 @@ Module 后台任务
 				End Select
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
 				通知文本 = 桌面 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
-				自定义通知(通知文本)
+				发通知(通知文本)
 				写日志(通知文本)
 			Catch ex As Net.Http.HttpRequestException
 				通知文本 = 桌面 & ex.InnerException.Message
-				自定义通知(通知文本)
+				发通知(通知文本)
 				写日志(通知文本)
 			End Try
 		End If
@@ -124,11 +119,11 @@ Module 后台任务
 				End Select
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
 				通知文本 = 锁屏 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
-				自定义通知(通知文本)
+				发通知(通知文本)
 				写日志(通知文本)
 			Catch ex As Net.Http.HttpRequestException
 				通知文本 = 锁屏 & ex.InnerException.Message
-				自定义通知(通知文本)
+				发通知(通知文本)
 				写日志(通知文本)
 			End Try
 		End If

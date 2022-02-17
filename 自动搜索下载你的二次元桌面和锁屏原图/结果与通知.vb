@@ -27,9 +27,16 @@ Module 结果与通知
 		通知初始化 = New ToastContentBuilder
 		通知初始化.AddText(文本)
 	End Function
-	Sub 自定义通知(文本 As String)
-		Dim 通知 As New ToastContentBuilder
-		通知.AddText(文本)
-		通知.Show()
+	Sub 发通知(通知 As ToastContentBuilder)
+		If 设置项.后台任务异常时发送通知 Then
+			通知.Show()
+		End If
+	End Sub
+	Sub 发通知(文本 As String)
+		If 设置项.后台任务异常时发送通知 Then
+			Dim 通知 As New ToastContentBuilder
+			通知.AddText(文本)
+			通知.Show()
+		End If
 	End Sub
 End Module
