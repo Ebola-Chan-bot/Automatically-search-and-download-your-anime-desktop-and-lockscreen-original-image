@@ -149,7 +149,8 @@
 				<ListView x:Name="锁屏_结果列表" ItemTemplate="{StaticResource ResourceKey=搜索结果明细}" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.Row="1"/>
 			</Grid>
 		</GroupBox>
-		<GroupBox Header="后台任务设置" Grid.Column="2">
+		<StackPanel Grid.Column="2">
+			<GroupBox Header="后台任务设置">
 			<StackPanel>
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -224,6 +225,20 @@
 					<TextBlock x:Name="哈希提示" Grid.Column="2"/>
 				</Grid>
 			</StackPanel>
-		</GroupBox>
+			</GroupBox>
+			<GroupBox Header="反馈">
+				<StackPanel>
+					<TextBlock Width="200" TextWrapping="Wrap">
+						<Run>
+							请说明是bug还是反馈建议？程序崩溃还是行为异常？因为图站网页布局随时可能变动，最常见的bug是下载链接解析失败。提供相关网页的网址，上传出错的图片和后台日志有助于作者定位bug。
+						</Run>
+						<LineBreak/>
+						<Hyperlink x:Name="反馈链接" NavigateUri="mailto:vhtmfu@outlook.com?subject=自动搜索下载你的二次元桌面和锁屏原图-反馈">
+							邮件反馈
+						</Hyperlink>
+					</TextBlock>
+				</StackPanel>
+			</GroupBox>
+		</StackPanel>
 	</Grid>
 </Window>

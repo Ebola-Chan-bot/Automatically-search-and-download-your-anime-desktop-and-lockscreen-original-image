@@ -231,4 +231,8 @@ Class MainWindow
 			日志流.Close()
 		End If
 	End Sub
+
+	Private Sub 反馈链接_RequestNavigate(sender As Object, e As RequestNavigateEventArgs) Handles 反馈链接.RequestNavigate
+		Process.Start(New ProcessStartInfo(e.Uri.AbsoluteUri) With {.UseShellExecute = True})
+	End Sub
 End Class

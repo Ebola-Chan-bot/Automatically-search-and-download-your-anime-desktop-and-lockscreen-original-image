@@ -50,6 +50,8 @@ Friend Module 图站检索
 			Catch ex As Exception
 				Return 保存结果.网站访问失败
 			End Try
+			'''解析测试用例：
+			'''https://konachan.net/post/show/338743
 			Dim HTML集合 = HTML文档.GetElementsByClassName("original-file-unchanged")
 			If HTML集合.Any Then
 				Dim 文件URL As String = DirectCast(HTML集合.Single, Html.HTMLAnchorElement).Href
@@ -60,9 +62,9 @@ Friend Module 图站检索
 				End Try
 				Return If(成功, 保存结果.成功, 保存结果.重复)
 			End If
-			HTML集合 = HTML文档.GetElementsByClassName("original-file-changed")
-			If HTML集合.Any Then
-				Dim 文件URL As String = DirectCast(HTML集合.Single, Html.HTMLAnchorElement).Href
+			Dim HTML元素 = HTML文档.GetElementById("highres")
+			If HTML元素 IsNot Nothing Then
+				Dim 文件URL As String = DirectCast(HTML元素, Html.HTMLAnchorElement).Href
 				Try
 					成功 = Await 尝试入库(Await HTTP客户端.GetByteArrayAsync(文件URL), If(设置项.扩展名一律设为PNG, Path.GetFileNameWithoutExtension(文件URL) + ".png", Path.GetFileName(文件URL)))
 				Catch ex As Net.Http.HttpRequestException
