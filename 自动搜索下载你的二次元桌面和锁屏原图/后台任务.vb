@@ -53,9 +53,15 @@ Module 后台任务
 			日志流.Flush()
 		End If
 	End Sub
+
+	Sub 错误通知(ex As Exception)
+		Dim 通知文本 = 桌面 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
+		发通知(通知文本)
+		写日志(通知文本)
+	End Sub
+
 	Async Sub 定时任务()
 		Dim 路径 As String = 搜索桌面壁纸(设置项.当前桌面路径)
-		Dim 通知文本 As String
 		If String.IsNullOrEmpty(路径) Then
 			发通知(桌面壁纸搜索失败通知)
 			写日志(桌面 & 无法定位当前壁纸)
@@ -82,13 +88,9 @@ Module 后台任务
 						写日志(桌面 & 无符合要求的原图)
 				End Select
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
-				通知文本 = 桌面 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
-				发通知(通知文本)
-				写日志(通知文本)
+				错误通知(ex)
 			Catch ex As Net.Http.HttpRequestException
-				通知文本 = 桌面 & ex.InnerException.Message
-				发通知(通知文本)
-				写日志(通知文本)
+				错误通知(ex)
 			End Try
 		End If
 		路径 = 搜索锁屏壁纸(设置项.当前锁屏路径)
@@ -118,13 +120,9 @@ Module 后台任务
 						写日志(锁屏 & 无符合要求的原图)
 				End Select
 			Catch ex As IqdbApi.Exceptions.InvalidFileFormatException
-				通知文本 = 锁屏 & If(IsNothing(ex.InnerException), ex.Message, ex.InnerException.Message)
-				发通知(通知文本)
-				写日志(通知文本)
+				错误通知(ex)
 			Catch ex As Net.Http.HttpRequestException
-				通知文本 = 锁屏 & ex.InnerException.Message
-				发通知(通知文本)
-				写日志(通知文本)
+				错误通知(ex)
 			End Try
 		End If
 	End Sub
